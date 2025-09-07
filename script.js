@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showPage(0);
         } catch (error) {
             console.error("Error generating story:", error);
-            alert("Failed to generate story. Please check the console for details.");
+            alert(`Failed to generate story: ${error.message}. Please ensure your API key is correct and try again.`);
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = 'צור סיפור';
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateImage(pageIndex, imageUrl, imagePrompt, true);
                 } catch (error) {
                     console.error("Error generating image:", error);
-                    alert("Failed to generate image. Please check the console for details.");
+                    alert(`Failed to generate image: ${error.message}`);
                 } finally {
                     target.disabled = false;
                     target.textContent = target.classList.contains('generate-image-btn') ? 'צור תמונה' : 'ערוך תמונה';
