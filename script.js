@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function generateImage(prompt) {
         // This is the real image generation implementation.
         const model = 'imagen-4.0-generate-001';
-        const response = await ai.models.generateImages({
+        const response = await genAI.models.generateImages({
             model: model,
             prompt: prompt,
             config: {
