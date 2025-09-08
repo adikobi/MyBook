@@ -152,6 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageIndex = parseInt(pageElement.dataset.pageIndex, 10);
 
         if (target.classList.contains('generate-image-btn') || target.classList.contains('edit-image-btn')) {
+            if (!genAI) {
+                alert("AI model is not ready. Please refresh and provide your API key.");
+                return;
+            }
             const imagePrompt = prompt("Enter a prompt for the image:");
             if (imagePrompt) {
                 target.disabled = true;
