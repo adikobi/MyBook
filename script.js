@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function generateStory(prompt, numPages) {
-        const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest"});
         const fullPrompt = `כתוב סיפור ילדים בנושא "${prompt}". הסיפור צריך להיות מחולק ל-${numPages} עמודים. אנא החזר את הסיפור בפורמט JSON, כאשר כל עמוד הוא מחרוזת במערך. לדוגמה: ["תוכן עמוד 1", "תוכן עמוד 2"].`;
 
         const result = await model.generateContent(fullPrompt);
@@ -207,10 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // NOTE: As of my last update, direct text-to-image generation with 'gemini-pro'
         // in the way shown below is not the standard way. The correct model would be
         // something like 'imagen'. However, without clear documentation on its usage with
-        // this specific library, I'm using a creative prompt with 'gemini-pro' as a placeholder.
+        // this specific library, I'm using a creative prompt with 'gemini-1.5-flash-latest' as a placeholder.
         // This part of the code will likely need to be updated once the correct API usage is found.
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // Using gemini-pro as a placeholder
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); // Using gemini-1.5-flash-latest as a placeholder
         const fullPrompt = `צור תמונה המתארת: "${prompt}". במקום התמונה, החזר כתובת URL של תמונה מ-Unsplash שתתאר את התמונה.`;
 
         const result = await model.generateContent(fullPrompt);
