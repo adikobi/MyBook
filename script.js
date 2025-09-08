@@ -157,7 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 target.disabled = true;
                 target.textContent = 'יוצר תמונה...';
                 try {
-                    const imageUrl = await generateImage(imagePrompt);
+                    const generatedImage = await generateImage(imagePrompt);
+                    const imageBytes = generatedImage.image.imageBytes;
+                    const imageUrl = `data:image/png;base64,${imageBytes}`;
                     updateImage(pageIndex, imageUrl, imagePrompt, true);
                 } catch (error) {
                     console.error("Error generating image:", error);
@@ -176,7 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else if (target.classList.contains('download-image-btn')) {
             const imageUrl = pageElement.querySelector('img').src;
-            window.open(imageUrl, '_blank');
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = 'book-image.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     });
 
@@ -204,22 +211,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function generateImage(prompt) {
-        // NOTE: This is a workaround for image generation.
-        // It asks the model for an image URL instead of generating an image directly.
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        const fullPrompt = `Return only a single, direct image URL from a free stock photo service (like Unsplash or Pexels) that matches the following description: "${prompt}". The URL must end in .jpg, .jpeg, or .png. Do not include any other text, explanation, or markdown formatting.`;
+        // This is the real image generation implementation.
+        const model = 'imagen-4.0-generate-001';
+        const response = await ai.models.generateImages({
+            model: model,
+            prompt: prompt,
+            config: {
+                numberOfImages: 1,
+            },
+        });
 
-        const result = await model.generateContent(fullPrompt);
-        const response = await result.response;
-        const text = (await response.text()).trim();
-
-        // Check if the returned text looks like a valid, direct image URL
-        if (text.startsWith('http') && (text.includes('.jpg') || text.includes('.png') || text.includes('.jpeg'))) {
-            return text;
-        }
-
-        // If not a valid URL, throw an error with the response for debugging
-        throw new Error(`The model did not return a valid image URL. Response: "${text}"`);
+        // Return the first generated image object.
+        return response.generatedImages[0];
     }
 
     function createRipple(event) {
