@@ -204,28 +204,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function generateImage(prompt) {
-        // NOTE: As of my last update, direct text-to-image generation with 'gemini-pro'
-        // in the way shown below is not the standard way. The correct model would be
-        // something like 'imagen'. However, without clear documentation on its usage with
-        // this specific library, I'm using a creative prompt with 'gemini-1.5-flash-latest' as a placeholder.
-        // This part of the code will likely need to be updated once the correct API usage is found.
-
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); // Using gemini-1.5-flash-latest as a placeholder
-        const fullPrompt = `צור תמונה המתארת: "${prompt}". במקום התמונה, החזר כתובת URL של תמונה מ-Unsplash שתתאר את התמונה.`;
+        // NOTE: This is a workaround for image generation.
+        // It asks the model for an image URL instead of generating an image directly.
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const fullPrompt = `Return only a single, direct image URL from a free stock photo service (like Unsplash or Pexels) that matches the following description: "${prompt}". The URL must end in .jpg, .jpeg, or .png. Do not include any other text, explanation, or markdown formatting.`;
 
         const result = await model.generateContent(fullPrompt);
         const response = await result.response;
-        const text = await response.text();
+        const text = (await response.text()).trim();
 
-        // This is a simplified and fragile way to extract a URL.
-        // A more robust solution would be needed for a real application.
-        const urlMatch = text.match(/https?:\/\/[^\s]+/);
-        if (urlMatch) {
-            return urlMatch[0];
+        // Check if the returned text looks like a valid, direct image URL
+        if (text.startsWith('http') && (text.includes('.jpg') || text.includes('.png') || text.includes('.jpeg'))) {
+            return text;
         }
 
-        // Fallback image if no URL is found
-        return 'https://via.placeholder.com/400';
+        // If not a valid URL, throw an error with the response for debugging
+        throw new Error(`The model did not return a valid image URL. Response: "${text}"`);
     }
 
     function createRipple(event) {
