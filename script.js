@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
     bookForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!apiKey) {
-            alert("Please provide an API key to generate a story.");
+        if (!genAI || !genAI.getGenerativeModel) {
+            alert("AI model is not ready. Please refresh and provide a valid API key.");
             return;
         }
 
@@ -152,8 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageIndex = parseInt(pageElement.dataset.pageIndex, 10);
 
         if (target.classList.contains('generate-image-btn') || target.classList.contains('edit-image-btn')) {
-            if (!genAI) {
-                alert("AI model is not ready. Please refresh and provide your API key.");
+            if (!genAI || !genAI.models || !genAI.models.generateImages) {
+                alert("Image generation model is not ready. Please refresh and provide a valid API key.");
                 return;
             }
             const imagePrompt = prompt("Enter a prompt for the image:");
